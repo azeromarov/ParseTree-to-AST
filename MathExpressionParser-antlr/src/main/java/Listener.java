@@ -22,21 +22,19 @@ class Node{
 public class Listener implements MathExpressionListener {
 
     Stack<Node> stack = new Stack();
-    Node root = null;
+    //Node root = null;
 
-    public void append(Node node){
+    /*public void append(Node node){
         this.stack.push(node);
         if (this.root == null)
             this.root = node;
-    }
+    }*/
 
     public void enterNumericAtomExp(MathExpressionParser.NumericAtomExpContext ctx){
-        Value node = new Value(ctx);
-        this.append(node);
     }
 
     public void exitNumericAtomExp(MathExpressionParser.NumericAtomExpContext ctx){
-        Value node = (Value) this.stack.pop();
+        Value node = new Value(Float.parseFloat(ctx.getText()));
         this.stack.add(node);
     }
 
@@ -107,12 +105,11 @@ public class Listener implements MathExpressionListener {
     }
 
     public void enterIdAtomExp(MathExpressionParser.IdAtomExpContext ctx){
-        Variable node = new Variable(ctx);
-        this.append(node);
+
     }
 
     public void exitIdAtomExp(MathExpressionParser.IdAtomExpContext ctx){
-        Variable node = (Variable) this.stack.pop();
+        Variable node = new Variable(ctx.getText());
         this.stack.add(node);
     }
 
@@ -322,8 +319,8 @@ class Sqrt extends Node implements Expression{
 
 class Value extends Node implements Expression{
     float value;
-    Value(MathExpressionParser.NumericAtomExpContext ctx){
-        this.value = Float.parseFloat(ctx.getText());
+    Value(float value){
+        this.value = value;
     }
     public void dump(){
         if(this.value < 0){
@@ -338,8 +335,8 @@ class Value extends Node implements Expression{
 class Variable extends Node implements Expression {
     String variable;
 
-    Variable(MathExpressionParser.IdAtomExpContext ctx) {
-        this.variable = ctx.getText();
+    Variable(String variable) {
+        this.variable = variable;
     }
 
     public void dump() {
